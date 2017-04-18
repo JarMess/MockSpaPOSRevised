@@ -1,0 +1,21 @@
+<?import javafx.geometry.Insets?>
+<?import mockSpaPOS.view.MenuGridPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import mockSpaPOS.view.LockerGridPane?>
+<?import mockSpaPOS.view.CheckOutPane?>
+<fx:root type="javafx.scene.layout.GridPane" xmlns:fx="http://javafx.com/fxml"
+          alignment="TOP_CENTER" hgap="30" vgap="30">
+
+    <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
+    <gridLinesVisible>false</gridLinesVisible>
+
+    <MenuGridPane fx:id="menuGridPane" alignment="TOP_CENTER" hgap="20" vgap="20"
+                  GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <gridLinesVisible>false</gridLinesVisible>
+    </MenuGridPane>
+    <StackPane fx:id="mainStackPane" GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="TOP_CENTER">
+        <LockerGridPane fx:id="lockerGridPane" alignment="TOP_CENTER" visible="true"  hgap="30" vgap="30"/>
+        <CheckOutPane fx:id="checkOutPane" visible="false" alignment="TOP_CENTER" hgap="30" vgap="10"/>
+    </StackPane>
+</fx:root>

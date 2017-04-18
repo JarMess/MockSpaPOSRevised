@@ -1,0 +1,30 @@
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.GridPane?>
+<fx:root type="javafx.scene.layout.GridPane" xmlns:fx="http://javafx.com/fxml"
+         alignment="TOP_CENTER" vgap="20">
+    <gridLinesVisible>false</gridLinesVisible>
+    <padding><Insets top="20"/></padding>
+    <Label fx:id="label" GridPane.columnIndex="0" GridPane.rowIndex="0"
+           style="-fx-font: NORMAL 20 Arial;"/>
+    <TableView fx:id="tableView" prefWidth="500" prefHeight="275"
+               GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.rowSpan="1">
+        <columns>
+            <TableColumn fx:id="lockerCol" text="Locker #" />
+            <TableColumn fx:id="itemCol" text="Item Purchased" prefWidth="200"/>
+            <TableColumn fx:id="priceCol" text="Price" prefWidth="50"/>
+            <TableColumn fx:id="quantCol" text="Quantity"/>
+            <TableColumn fx:id="timeCol" text="Time" prefWidth="70"/>
+        </columns>
+    </TableView>
+    <HBox GridPane.rowIndex="2" GridPane.columnIndex="0"
+          alignment="TOP_RIGHT">
+        <Button GridPane.columnIndex="0" GridPane.rowIndex="2"
+                text="Void" alignment="CENTER" prefHeight="60" prefWidth="75"/>
+    </HBox>
+</fx:root>

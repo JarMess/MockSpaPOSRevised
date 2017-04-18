@@ -1,0 +1,19 @@
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<fx:root type="javafx.scene.layout.GridPane" xmlns:fx="http://javafx.com/fxml" alignment="CENTER"
+         hgap="155" vgap="15">
+    <padding><Insets top="15" left="50" right="50"/></padding>
+
+    <TextArea GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" fx:id="textArea"
+              prefWidth="360" prefHeight="500" editable="false" wrapText="true"/>
+
+    <Button fx:id="payButton" text="Pay and&#xD;Check Out" prefWidth="100" prefHeight="60"
+            GridPane.columnIndex="0" GridPane.rowIndex="1">
+
+    </Button>
+    <Button fx:id="cancelButton" text="Cancel" prefWidth="100" prefHeight="60"
+            GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+</fx:root>

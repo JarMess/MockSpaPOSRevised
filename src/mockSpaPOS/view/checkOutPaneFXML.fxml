@@ -1,0 +1,56 @@
+<?import javafx.scene.layout.GridPane?>
+
+<?import mockSpaPOS.view.EditBillPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import mockSpaPOS.view.DepartmentPane?>
+<fx:root type="javafx.scene.layout.GridPane" xmlns:fx="http://javafx.com/fxml"
+         alignment="TOP_CENTER" vgap="20">
+    <gridLinesVisible>false</gridLinesVisible>
+    <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0"
+              alignment="TOP_CENTER">
+        <gridLinesVisible>false</gridLinesVisible>
+        <EditBillPane fx:id="currentBillPane" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <EditBillPane fx:id="previewBillPane" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    </GridPane>
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <gridLinesVisible>false</gridLinesVisible>
+        <!--<HBox GridPane.columnIndex="0" GridPane.rowIndex="0"-->
+              <!--prefWidth="800" prefHeight="80" spacing="50" alignment="BOTTOM_CENTER">-->
+            <!--<padding><Insets right="120"></Insets></padding>-->
+            <!--<HBox prefWidth="100" alignment="BOTTOM_CENTER">-->
+                <!--<Label fx:id="departmentText" text="Department test"/>-->
+            <!--</HBox>-->
+            <!--<HBox prefWidth="500" alignment="BOTTOM_CENTER">-->
+                <!--<Label fx:id="categoryText" text="Category test"-->
+                       <!--GridPane.columnIndex="1" GridPane.rowIndex="0"/>-->
+            <!--</HBox>-->
+        <!--</HBox>-->
+        <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="30"
+              prefHeight="755" prefWidth="815" alignment="CENTER">
+            <StackPane fx:id="departmentStackPane" prefWidth="715" prefHeight="750" alignment="TOP_CENTER">
+                <!--<DepartmentPane fx:id="dPane" spacing="50" prefHeight="750" prefWidth="700" alignment="CENTER" visible="false"/>-->
+                <!--<LockerCheckOutPane spacing="50" prefHeight="660" prefWidth="700" alignment="CENTER" visible="false"/>-->
+            </StackPane>
+            <!--create new pane for box below(need all buttons)-->
+            <VBox fx:id="chooseDepVbox" spacing="10" prefHeight="750" prefWidth="90" alignment="BASELINE_CENTER">
+                <padding><Insets top="40"/></padding>
+            </VBox>
+        </HBox>
+        <HBox GridPane.rowIndex="1" GridPane.columnIndex="0" spacing="50"
+              prefHeight="100" prefWidth="900" alignment="CENTER">
+            <Button fx:id="setLockerButton" text="Input Locker" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                    prefWidth="100" prefHeight="60"/>
+            <Button fx:id="addItemsButton" text="Add Items" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                    prefWidth="100" prefHeight="60"/>
+            <!--<Button fx:id="checkOutButton" text="Check Out Customer" GridPane.columnIndex="2" GridPane.rowIndex="0"/>-->
+        </HBox>
+    </GridPane>
+
+
+
+</fx:root>

@@ -1,0 +1,12 @@
+<?import javafx.geometry.Insets?>
+<?import mockSpaPOS.view.CategoryVBox?>
+<?import mockSpaPOS.view.ItemVBox?>
+<fx:root type="javafx.scene.layout.HBox" xmlns:fx="http://javafx.com/fxml"
+         spacing="50" prefWidth="700" prefHeight="7500" alignment="CENTER">
+    <padding><Insets top="10"></Insets></padding>
+    <CategoryVBox fx:id="catVBox"/>
+    <ItemVBox fx:id="itemVBox"/>
+
+
+
+</fx:root>

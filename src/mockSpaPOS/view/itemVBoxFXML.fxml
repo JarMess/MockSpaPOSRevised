@@ -1,0 +1,14 @@
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml"
+         spacing="50" prefWidth="500" prefHeight="750" alignment="TOP_CENTER">
+    <HBox alignment="BOTTOM_CENTER" prefHeight="80">
+        <Label fx:id="categoryLabel"/>
+    </HBox>
+    <ScrollPane prefWidth="500" prefHeight="600">
+        <StackPane fx:id="itemStackPane"/>
+    </ScrollPane>
+
+</fx:root>

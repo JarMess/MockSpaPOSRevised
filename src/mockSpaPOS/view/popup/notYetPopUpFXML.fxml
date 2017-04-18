@@ -1,0 +1,11 @@
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml"
+         alignment="CENTER" spacing="20" minHeight="200" minWidth="300">
+    <HBox prefHeight="50" prefWidth="200" alignment="CENTER">
+        <Text text="Feature not yet available"/>
+    </HBox>
+    <Button fx:id="okayButton"  onAction="#clickedOkay"
+            prefHeight="50" prefWidth="75" text="Okay"/>
+</fx:root>

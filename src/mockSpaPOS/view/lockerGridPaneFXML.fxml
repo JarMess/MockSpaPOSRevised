@@ -1,0 +1,17 @@
+<?import mockSpaPOS.view.LockerGridPane?>
+<?import mockSpaPOS.view.LockerStatusGridPane?>
+<?import mockSpaPOS.view.LockerPageGridPane?>
+<?import javafx.scene.layout.GridPane?>
+
+<fx:root type="javafx.scene.layout.GridPane" xmlns:fx="http://javafx.com/fxml">
+    <gridLinesVisible>false</gridLinesVisible>
+    <LockerStatusGridPane fx:id="lockerStatusGridPane" alignment="TOP_CENTER" hgap="5" vgap="5"
+                          GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <gridLinesVisible>false</gridLinesVisible>
+    </LockerStatusGridPane>
+
+    <LockerPageGridPane fx:id="lockerPageGridPane" alignment="TOP_CENTER" hgap="5" vgap="5"
+                    GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <gridLinesVisible>false</gridLinesVisible>
+    </LockerPageGridPane>
+</fx:root>
