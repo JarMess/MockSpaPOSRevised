@@ -5,9 +5,6 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 
-/**
- * Created by James on 3/19/2017.
- */
 public class LockerStatusGridPane extends GridPane {
 
     public LockerStatusGridPane(){

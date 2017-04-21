@@ -14,7 +14,6 @@ import mockSpaPOS.model.BillItem;
 import mockSpaPOS.model.Customer;
 import mockSpaPOS.model.Locker;
 
-
 public class CheckOutPane extends GridPane{
     @FXML private EditBillPane currentBillPane;
     @FXML private EditBillPane previewBillPane;

@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-
 public class ItemVBox extends VBox {
     @FXML Label categoryLabel;
     @FXML StackPane itemStackPane;
