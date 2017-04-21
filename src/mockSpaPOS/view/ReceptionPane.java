@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -36,7 +37,7 @@ public class ReceptionPane extends GridPane{
     @FXML private Button removeButton;
     @FXML private Button checkInButton;
     @FXML private Button addCheckInButton;
-    @FXML private TableView<Locker> inUseTable;
+    @FXML private TableView<Customer> inUseTable;
     @FXML private TableColumn lockNumCol;
     @FXML private TableColumn timeCol;
     @FXML private TableColumn totalCol;
@@ -47,7 +48,7 @@ public class ReceptionPane extends GridPane{
     private Spa mainSpa;
     private ObservableList<AvailableLocker> availableData;
     private AvailableLocker availableLocker;
-    private ObservableList<Locker> inUseData;
+    private ObservableList<Customer> inUseData;
     private SpaPOSController mainCont;
     private ReadOnlyIntegerProperty inUseSelection;
 
@@ -128,7 +129,7 @@ public class ReceptionPane extends GridPane{
         inUseData= FXCollections.observableArrayList();
         inUseTable.setItems(inUseData);
         lockNumCol.setCellValueFactory( new PropertyValueFactory<Locker, String>("lockerNumber"));
-        timeCol.setCellValueFactory( new PropertyValueFactory<Locker, String>("checkInTime"));
+        timeCol.setCellValueFactory( new PropertyValueFactory<Locker, String>("status"));
         totalCol.setCellValueFactory( new PropertyValueFactory<Locker, String>("billTotal"));
         inUseSelection=inUseTable.getSelectionModel().selectedIndexProperty();
         inUseSelection.addListener(o->{
@@ -139,134 +140,140 @@ public class ReceptionPane extends GridPane{
 
     private void initCheckOutButtons(){
         removeLockerButton.setOnAction(e->{
-            try {
-                EditBillPane currentBP= mainCont.getCheckOutPane().getCurrentBillPane();
-                TableView<Locker.LockerItem> tV=currentBP.getTableView();
-                Locker.LockerItem lI = tV.getSelectionModel().getSelectedItem();
-                if (lI==null){ //nothing is selected select the one currently checking out
-                    if (!tV.getItems().isEmpty()) {
-                        lI = tV.getItems().get(0);
-                    }
+            EditBillPane currentBP= mainCont.getCheckOutPane().getCurrentBillPane();
+            TableView<BillItem> currentTV=currentBP.getTableView();
+            BillItem bI = currentTV.getSelectionModel().getSelectedItem();
+            Customer selected=null;
+            ObservableList<Customer> checkOutList=currentBP.getCheckOutList();
+            if (!checkOutList.isEmpty()) {
+                if (bI==null){ //nothing is selected select the one currently checking out
+                    selected=checkOutList.get(0);
+                }
+                else{
+                    selected = mainSpa.getLocker(bI.getCustLockerNumber()-1).getCustomer();
                 }
 
-                //remove all lockerItems with highlighted lockernumber
-                Iterator<Locker.LockerItem> iter= currentBP.getLockerItems().iterator();
+                //remove all customers from list with highlighted lockernumber
+                Iterator<Customer> iter= checkOutList.iterator();
+                ObservableList<BillItem> billItems= currentBP.getBillItems();
                 while(iter.hasNext()){
-
-                    if(iter.next().equals(lI))
+                    Customer next=iter.next();
+                    if(next.equals(selected)) {
+                        for(BillItem billFor: next.getBill().getItemList()){
+                            billItems.remove(billFor);
+                        }
                         iter.remove();
-                }
-                int lockerNum=lI.getLockerNum();
-                //remove from arrayList currently selected locker
-                ObservableList<Locker> lockerAL=currentBP.getCheckOutList();
-                for (int i=0;i<lockerAL.size();i++){
-                    if (lockerNum == lockerAL.get(i).getLockerNumber())
-                        lockerAL.remove(i);
+                    }
+
                 }
 
-                if(lockerAL.isEmpty()){
+                if(checkOutList.isEmpty()){
                     currentBP.setLabel("Current Bill");
                     mainCont.setCurrentCustomer(null);
 
                 }else{
-                    currentBP.setLabel("Currently Checking Out: "+lockerAL.get(0).getLockerNumberString());
-                    mainCont.setCurrentCustomer(mainSpa.getLocker(tV.getItems().get(0).getLockerNum()-1));
+                    currentBP.setLabel("Currently Checking Out: "+checkOutList.get(0).getLockerNumberString());
+                    mainCont.setCurrentCustomer(checkOutList.get(0));//next customer in line next to check out
                 }
-            } catch (Exception err){
-//                System.out.println(err);
-            }
+            }// if checkout list is empty cant remove customer from it
+
         });
 
         removeGroupButton.setOnAction(e->{
             int inUseIndex=inUseTable.getSelectionModel().getFocusedIndex();
-            Locker selected=inUseData.get(inUseIndex);
-            ArrayList<Locker> group=selected.getCustomer().getLockerGroup().getLockerGroup();
+            Customer selected=inUseData.get(inUseIndex);
+            ArrayList<Customer> custGroup=selected.getCheckInGroup().getCustomerGroup();
 
             EditBillPane currentBP= mainCont.getCheckOutPane().getCurrentBillPane();
-            TableView<Locker.LockerItem> tV=currentBP.getTableView();
-            ObservableList<Locker> lockerAL= currentBP.getCheckOutList();
-            for(Locker l: group){
-                inUseData.remove(l);
+            TableView<BillItem> currentTV=currentBP.getTableView();
+            ObservableList<Customer> checkOutList= currentBP.getCheckOutList();
+            for(Customer c: custGroup){
+                inUseData.remove(c); //remove all customers in custGroup
 
-                if (!lockerAL.isEmpty()){ //look through currentBill list to see if locker is there and remove
-                    Iterator<Locker> iter= lockerAL.iterator();
+                if (!checkOutList.isEmpty()){ //look through checkout list to see if customer is there and remove
+                    Iterator<Customer> iter= checkOutList.iterator();
 
                     while (iter.hasNext()){
-                        if (iter.next().equals(l)){
+                        if (iter.next().equals(c)){
                             iter.remove();
                         }
                     }
                 }
             }
 
+            //update preview and current
             EditBillPane previewBP=mainCont.getCheckOutPane().getPreviewBillPane();
-
-            if(lockerAL.isEmpty()){
+            if(checkOutList.isEmpty()){
                 currentBP.setLabel("Current Bill");
-                try{
-                    mainCont.setCurrentCustomer(null);
-                }catch(Exception err){
-//                    System.out.println(err);
+                mainCont.setCurrentCustomer(null);
+                if (inUseData.isEmpty()){
+                    previewBP.clear("Preview Bill");
+                    mainCont.setPreviewBill(null);
                 }
-                previewBP.clear("Preview Bill");
-                mainCont.setPreviewCustomer(null);
+                else {
+                    inUseTable.getSelectionModel().focus(0);
+                    updatePreviewBill();
+                }
             }
             else {
-                currentBP.setLabel("Currently Checking Out: "+lockerAL.get(0).getLockerNumberString());
-                try{
-                    mainCont.setCurrentCustomer(mainSpa.getLocker(tV.getItems().get(0).getLockerNum()-1));
-                } catch (Exception err) {
-//                    System.out.println(err);
-                }
+                currentBP.setLabel("Currently Checking Out: "+checkOutList.get(0).getLockerNumberString());
+                mainCont.setCurrentCustomer(checkOutList.get(0));
 
                 inUseTable.getSelectionModel().focus(0);
                 updatePreviewBill();
             }
-
-
-
-
         });
 
         addBillButton.setOnAction(e->{
-            Locker selected= inUseTable.getSelectionModel().getSelectedItem();
+            Customer selected= mainSpa.getLocker(
+                    inUseTable.getSelectionModel().getSelectedItem().getLockerNumber()-1)
+                    .getCustomer();
             if(!isBeingCheckedOut(selected)){
-                //add locker to currentBP
+                mainCont.getCheckOutPane().getCurrentBillPane()
+                        .addCustomer(selected);
             }
         });
 
         checkOutButton.setOnAction(e->{
-            try{
-                if (!getCheckingOut().isEmpty()) {
-                    Scene s = new Scene(new CheckOutBillPopUp(mainSpa, this), 500, 670);
-                    Stage st = new Stage();
-                    st.setScene(s);
-                    st.show();
-                }
-                else throw new Exception("no lockers checking out in list");
-            } catch( Exception err){
-                //System.out.println("no lockers currently checking in or items have not been set" );
+            if (!getCheckingOut().isEmpty()) {
+                Scene s = new Scene(new CheckOutBillPopUp(mainSpa, this), 500, 670);
+                Stage st = new Stage();
+                st.setScene(s);
+                st.show();
             }
-
+            else{
+                //no lockers checking out
+            }
         });
     }
 
     private void updatePreviewBill(){
-        Locker l = inUseTable.getSelectionModel().getSelectedItem();
-        if (!isBeingCheckedOut(l)){
-            mainCont.setPreviewCustomer(l);
-            mainCont.getCheckOutPane().setPreviewBillPane(l.getCustomer().getBill());
-            mainCont.getCheckOutPane().getPreviewBillPane().setLabel(l.getLockerNumberString());
+        if (!inUseData.isEmpty()){
+            Customer c = inUseTable.getSelectionModel().getSelectedItem();
+            EditBillPane previewBP= mainCont.getCheckOutPane().getPreviewBillPane();
+            if (!c.isCheckedOut()) {
 
+                if (!isBeingCheckedOut(c)) {
+                    mainCont.setPreviewBill(c);
+                    previewBP.setBill(c.getBill());
+                    previewBP.setLabel(c.getLockerNumberString());
+
+                } else {
+                    mainCont.setPreviewBill(null);
+                    previewBP.clear(c.getLockerNumberString() + " is being checked out");
+                }
+            } else {
+                mainCont.setPreviewBill(null);
+                previewBP.clear("Customer is already checked out");
+            }
         }
         else{
-            mainCont.getCheckOutPane().getPreviewBillPane()
-                    .clear(l.getLockerNumberString()+ " is being checked out");
+            //in use empty
         }
     }
 
-    private boolean isBeingCheckedOut(Locker l){
-        return mainCont.getCheckOutPane().getCurrentBillPane().getCheckOutList().contains(l);
+    private boolean isBeingCheckedOut(Customer c){
+        return mainCont.getCheckOutPane().getCurrentBillPane().getCheckOutList().contains(c);
     }
 
     public TableView getAvailableTable() {
@@ -304,28 +311,21 @@ public class ReceptionPane extends GridPane{
     }
 
     public boolean addInUse(int index){
-        if(!(inUseData.contains(mainSpa.getLocker(index))))
-            inUseData.addAll(mainSpa.getLocker(index).getCustomer().getLockerGroup().getLockerGroup());
+        Customer inputCustomer= mainSpa.getLocker(index).getCustomer();
+        EditBillPane currentBP= mainCont.getCheckOutPane().getCurrentBillPane();
+        if(!(inUseData.contains(inputCustomer))) //only add to current bill pane if its not already there
+            inUseData.addAll(inputCustomer.getCheckInGroup().getCustomerGroup());
 
-        if ( mainCont.getCheckOutPane().getCurrentBillPane().getCheckOutList().isEmpty()) {
-            try {
-                mainCont.setCurrentCustomer(mainSpa.getLocker(index));
-
-            }catch(Exception err){
-                System.out.println(err);
-            }
-            mainCont.getCheckOutPane().setCurrentBillPane(mainSpa.getLocker(index));
-            mainCont.getCheckOutPane().getCurrentBillPane().setLabel("Currently Checking Out: "
-                    + mainSpa.getLocker(index).getLockerNumberString());
+        if (currentBP.getCheckOutList().isEmpty()) {// current bill pane not set
+            mainCont.setCurrentCustomer(inputCustomer);
+            currentBP.setCustomer(inputCustomer);
+            currentBP.setLabel("Currently Checking Out: "
+                    + inputCustomer.getLockerNumberString());
         } else {
-            mainCont.getCheckOutPane().getCurrentBillPane().addLocker(mainSpa.getLocker(index));
-        }
-        return true;
-    }
-
-    private boolean allCheckedIn(){
-        for (AvailableLocker a:availableData){
-            if(a.getCheckInItem()==null) return false;
+            currentBP.setLabel("Currently Checking Out: "
+                    + inputCustomer.getLockerNumberString());
+            if (!currentBP.getCheckOutList().contains(inputCustomer))
+                currentBP.addCustomer(inputCustomer);
         }
         return true;
     }
@@ -374,14 +374,23 @@ public class ReceptionPane extends GridPane{
 
     public void checkOut(){
         EditBillPane currentBP=mainCont.getCheckOutPane().getCurrentBillPane();
-        ObservableList<Locker> checkOut=currentBP.getCheckOutList();
+        ObservableList<Customer> checkOut=currentBP.getCheckOutList();
 
-        for (Locker l: checkOut){
-            mainSpa.checkOutLocker(l.getLockerNumber()-1);
+        for (Customer c: checkOut){
+            mainSpa.checkOutLocker(c.getLockerNumber()-1);
+        }
+
+        currentBP.clear("Current Bill:");
+        setNextAvailableCheckOut();
+    }
+
+    private void setNextAvailableCheckOut(){
+        if (!inUseData.isEmpty()){
+
         }
     }
 
-    public ObservableList<Locker> getCheckingOut(){
+    public ObservableList<Customer> getCheckingOut(){
         return mainCont.getCheckOutPane().getCurrentBillPane().getCheckOutList();
     }
 
@@ -391,12 +400,12 @@ public class ReceptionPane extends GridPane{
             alist.add(al.getLocker());
 
         AvailableLocker aL= availableData.get(0);
-        Customer c= new Customer(aL.getCheckInItem(),alist);
+        Customer c= new Customer(aL.getCheckInItem(), aL.getLocker(), alist);
 
-        aL.getLocker().setCustomer(c);
+        mainSpa.checkIn(aL.getLockerNumber()-1,c);
         for (int i=1;i<availableData.size(); i++){
             aL=availableData.get(i);
-            aL.getLocker().setCustomer(new Customer(aL.getCheckInItem(),alist,c.getLockerGroup()));
+            mainSpa.checkIn(aL.getLockerNumber()-1,new Customer(aL.getCheckInItem(),aL.getLocker(),c.getCheckInGroup(),alist));
         }
 
         availableData.clear();

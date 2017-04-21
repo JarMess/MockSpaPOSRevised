@@ -82,8 +82,8 @@ public class Spa {
         return lockerList;
     }
 
-    public boolean checkIn(int lockerIndex, DepartmentItem checkInType){
-        return lockerList.get(lockerIndex).setCustomer(checkInType);
+    public boolean checkIn(int lockerIndex, Customer customer){
+        return lockerList.get(lockerIndex).setCustomer(customer);
     }
 
     public boolean transferCustomer(int fromIndex, int toIndex){

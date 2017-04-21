@@ -5,46 +5,46 @@ import java.util.ArrayList;
 
 public class CheckInGroup {
     private LocalDateTime checkInTime;
-    private ArrayList<Locker> lockerGroup;  //keeps track of all lockers checked in together
+    private ArrayList<Customer> customerGroup;  //keeps track of all lockers checked in together
     private ArrayList<CheckInGroup> checkInGroups;  //keeps track of diff times when combining bills
     private boolean checkedOut;
 
-    public CheckInGroup(Locker locker){
+    public CheckInGroup(Customer customer){
         checkInTime=LocalDateTime.now();
-        lockerGroup=new ArrayList<>();
-        lockerGroup.add(locker);
+        customerGroup=new ArrayList<>();
+        customerGroup.add(customer);
         checkInGroups=new ArrayList<>();
         checkInGroups.add(this);
     }
 
-    public CheckInGroup(ArrayList<Locker> lockerGroup){
+    public CheckInGroup(ArrayList<Customer> customerGroup){
         checkInTime=LocalDateTime.now();
-        this.lockerGroup=lockerGroup;
+        customerGroup.addAll(customerGroup);
         checkInGroups=new ArrayList<>();
         checkInGroups.add(this);
     }
 
-    public boolean changeFromTo(Locker from, Locker to){
-        if (lockerGroup.remove(from)) {
-            lockerGroup.add(to);
-            return true;
-        }
-        return false;
+//    public boolean changeFromTo(Locker from, Locker to){
+//        if (customerGroup.remove(from)) {
+//            customerGroup.add(to);
+//            return true;
+//        }
+//        return false;
+//    }
+
+    public void add(Customer customer){
+        customerGroup.add(customer);
     }
 
-    public void add(Locker locker){
-        lockerGroup.add(locker);
-    }
-
-    public void add(ArrayList<Locker> lockerGroup){
-        lockerGroup.addAll(lockerGroup);
+    public void add(ArrayList<Customer> customerGroup){
+        this.customerGroup.addAll(customerGroup);
     }
 
     public void addGroup(CheckInGroup checkInGroup){
         if (!(checkInGroups.contains(checkInGroup))) {
             checkInGroups.add(checkInGroup);
             checkInGroup.setCheckInGroups(checkInGroups);
-            add(checkInGroup.lockerGroup);
+            add(checkInGroup.customerGroup);
         }
         else {// if checkInGroups contains checkInGroup(same lockers) then its the same group;
             checkInGroup=this;
@@ -64,16 +64,24 @@ public class CheckInGroup {
         //(shouldnt be possible to have another group with a locker from checkin group)
         //(if one of the lockers in o arent in current group, rest shouldnt be)
         if (! (o instanceof CheckInGroup))return false;
-        if (lockerGroup.equals(((CheckInGroup)o).lockerGroup)) return true;
+        if (customerGroup.equals(((CheckInGroup)o).customerGroup)) return true;
 
-        for (Locker l: lockerGroup){
-            for (Locker l2: ((CheckInGroup)o).lockerGroup)
-                if (l.equals(l2)) return true;
+        for (Customer c: customerGroup){
+            for (Customer c2: ((CheckInGroup)o).customerGroup)
+                if (c.equals(c2)) return true;
         }
         return false;
     }
 
-    public ArrayList<Locker> getLockerGroup() {
-        return lockerGroup;
+    public ArrayList<Customer> getCustomerGroup() {
+        return customerGroup;
     }
+
+//    public ArrayList<Customer> getCustomerGroup(){
+//        ArrayList<Customer> customerAL= new ArrayList<>();
+//        for(Locker l : getLockerGroup()){
+//            customerAL.add(l.getCustomer());
+//        }
+//        return customerAL;
+//    }
 }

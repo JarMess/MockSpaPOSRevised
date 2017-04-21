@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import mockSpaPOS.model.Bill;
 import mockSpaPOS.model.BillItem;
+import mockSpaPOS.model.Customer;
 import mockSpaPOS.model.Locker;
 
 
@@ -41,20 +42,8 @@ public class CheckOutPane extends GridPane{
         return chooseDepVbox;
     }
 
-
     public StackPane getdepStackPane(){
         return departmentStackPane;
-    }
-
-    public void setPreviewBillPane(Bill previewBill){
-        previewBillPane.setBill(previewBill);
-    }
-    public void setPreviewBillPane(Locker previewLocker){
-        previewBillPane.setLocker(previewLocker);
-    }
-
-    public StringProperty previewBillLabelProperty(){
-        return previewBillPane.labelProperty();
     }
 
     public Button getSetLockerButton() {
@@ -67,22 +56,6 @@ public class CheckOutPane extends GridPane{
 
     public Button getAddItemsButton() {
         return addItemsButton;
-    }
-
-    public void setCurrentBillPane(Bill currentBill){
-        currentBillPane.setBill(currentBill);
-    }
-
-    public void setCurrentBillPane(Locker currentLocker){
-        currentBillPane.setLocker(currentLocker);
-    }
-
-    public void addBillToCurrent(Bill b){
-        currentBillPane.addBill(b);
-    }
-
-    public void addItemToPreview(BillItem bI){
-        previewBillPane.addBillItem(bI);
     }
 
     public EditBillPane getPreviewBillPane() {

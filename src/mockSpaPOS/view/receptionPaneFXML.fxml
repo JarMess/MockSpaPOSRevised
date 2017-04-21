@@ -43,7 +43,7 @@
                    prefHeight="355" prefWidth="315">
             <columns>
                 <TableColumn fx:id="lockNumCol" text="Locker #"/>
-                <TableColumn fx:id="timeCol" text="Check In Time" prefWidth="120"/>
+                <TableColumn fx:id="timeCol" text="Status" prefWidth="120"/>
                 <TableColumn fx:id="totalCol" text="Bill Total" />
             </columns>
         </TableView>
@@ -51,11 +51,11 @@
 
     <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1" vgap="50" hgap="50" alignment="CENTER">
         <Button fx:id="removeLockerButton" GridPane.columnIndex="0" GridPane.rowIndex="0"
-                text="Remove Locker" prefWidth="100" prefHeight="75"/>
+                text="Remove Locker&#xD;From Current&#xD;Check Out" prefWidth="100" prefHeight="75"/>
         <Button fx:id="removeGroupButton" GridPane.columnIndex="1" GridPane.rowIndex="0"
                 text="Remove Group" prefWidth="100" prefHeight="75"/>
         <Button fx:id="addBillButton" GridPane.columnIndex="0" GridPane.rowIndex="1"
-                text="Add to Current" prefWidth="100" prefHeight="75"/>
+                text="Add to Current&#xD;Check Out" prefWidth="100" prefHeight="75"/>
         <Button fx:id="checkOutButton" GridPane.columnIndex="1" GridPane.rowIndex="1"
                 text="Check Out&#xD;Current" prefWidth="100" prefHeight="75"/>
     </GridPane>

@@ -15,20 +15,18 @@
            GridPane.columnIndex="0" GridPane.rowIndex="0"
            GridPane.columnSpan="3"/>
 
-    <ScrollPane prefWidth="500" prefHeight="600"
-                GridPane.columnIndex="0" GridPane.rowIndex="1"
-                GridPane.columnSpan="3">
-        <fitToWidth>true</fitToWidth>
-        <TableView fx:id="tableView" prefWidth="495" prefHeight="595">
-            <columns>
-                <TableColumn fx:id="itemCol" text="Item Purchased" prefWidth="255"/>
-                <TableColumn fx:id="priceCol" text="Price"/>
-                <TableColumn fx:id="quantCol" text="Quantity"/>
-                <TableColumn fx:id="timeCol" text="Time"/>
+    <TableView fx:id="tableView" prefWidth="500" prefHeight="600"
+               GridPane.columnIndex="0" GridPane.rowIndex="1"
+               GridPane.columnSpan="3">
+        <columns>
+            <TableColumn fx:id="lockerCol" text="Locker #" />
+            <TableColumn fx:id="itemCol" text="Item Purchased" prefWidth="200"/>
+            <TableColumn fx:id="priceCol" text="Price" prefWidth="50"/>
+            <TableColumn fx:id="quantCol" text="Quantity"/>
+            <TableColumn fx:id="timeCol" text="Time" prefWidth="70"/>
 
-            </columns>
-        </TableView>
-    </ScrollPane>
+        </columns>
+    </TableView>
 
     <Button text="Check In / Transfer" fx:id="checkInButton"
             prefWidth="155" prefHeight="50"

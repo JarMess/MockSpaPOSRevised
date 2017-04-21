@@ -38,9 +38,6 @@ public class SpaPOSController extends GridPane{
     private Scene notYetScene;
     private NotYetPopUp notYetPopUp;
     private ReceptionPane receptionPane;
-    private Bill currentBill;
-    private Locker testLocker;
-    private Locker currentLocker;
 
     public SpaPOSController() throws Exception{
         initializeValues();
@@ -121,15 +118,15 @@ public class SpaPOSController extends GridPane{
         checkOutPane.getAddItemsButton().setOnAction(e->{
             if (currentCustomer==null)
                 enterLockerPopUpStage.show();
-            else {
+            else {//current customer is set
                 currentCustomer.getBill().addBill(previewBill);
-                if (previewCustomer!=null) {
+                if (previewCustomer!=null) { //preview customer is only set in reception pane
+                    //transfer bill from preview customer to current customer
                     previewBill.removeAll();
-
                 }
                 else{
                     previewBill=new Bill();
-                    checkOutPane.setPreviewBillPane(previewBill);
+                    checkOutPane.getPreviewBillPane().setBill(previewBill);
                 }
             }
 
@@ -144,53 +141,42 @@ public class SpaPOSController extends GridPane{
             try{
                 index=Integer.parseInt(enterLockerPopUp.textFieldProperty().get())-1;
                 if (index>=0 && index<=1999){
-                    if (!(checkOutPane.getdepStackPane().getChildren().get(mainModel.getDepartmentList().size())
-                            .isVisible())) { // if reception is not visible
-                        testLocker=mainModel.getLocker(index);
-                        setCurrentCustomer(mainModel.getLocker(index));
-                        checkOutPane.setCurrentBillPane(currentCustomer.getBill());
-                        checkOutPane.getCurrentBillPane().setLabel(mainModel.getLocker(index).getLockerNumberString());
-                        enterLockerPopUpStage.close();
+                    if (mainModel.getLocker(index).isOccupied()){
+                        if (!(checkOutPane.getdepStackPane().getChildren().get(mainModel.getDepartmentList().size())
+                                .isVisible())) { // if reception is not visible
+                            setCurrentCustomer(mainModel.getLocker(index).getCustomer());
+                            checkOutPane.getCurrentBillPane().setCustomer(currentCustomer);
+                            checkOutPane.getCurrentBillPane().setLabel(mainModel.getLocker(index).getLockerNumberString());
+                            enterLockerPopUpStage.close();
+                        }
+                        else{ //reception is visible
+                            enterLockerPopUp.textFieldProperty().set("");
+                            checkOutPane.showDep(mainModel.getDepartmentList().size());
+                            //checkOutPane.setCurrentBillPane(mainModel.getLocker(index));
+                            receptionPane.addLocker(index);
+                        }
                     }
-                    else{ //reception is visible
+                    else{
                         enterLockerPopUp.textFieldProperty().set("");
                         checkOutPane.showDep(mainModel.getDepartmentList().size());
                         //checkOutPane.setCurrentBillPane(mainModel.getLocker(index));
                         receptionPane.addLocker(index);
                     }
-
-
 //                    enterLockerPopUpStage.close();
                 }
             } catch (NumberFormatException err) {
                 enterLockerPopUp.textFieldProperty().set("");
                 //System.out.println(err);
-            }catch (Exception err){// not checked in
-//                System.out.println("locker not checked in");
-                clearCheckOut();
-                enterLockerPopUp.textFieldProperty().set("");
-                checkOutPane.showDep(mainModel.getDepartmentList().size());
-                receptionPane.addLocker(index);
-
-
-//                enterLockerPopUpStage.close();
-
             }
-
         });
     }
 
-    public void setCurrentCustomer(Locker locker) throws Exception{
-        currentLocker=locker;
-        currentCustomer=locker.getCustomer();
-        if (currentCustomer==null) {
-            throw new Exception("locker is not checked in");
-        }
-//        checkOutPane.setCurrentBillPane(locker.getCustomer().getBill());
+    public void setCurrentCustomer(Customer customer){
+        currentCustomer=customer;
     }
 
     private void initializePreviewBillPane(){
-        checkOutPane.setPreviewBillPane(previewBill);
+        checkOutPane.getPreviewBillPane().setBill(previewBill);
     }
 
     private void initLockerPageButtons(){
@@ -217,7 +203,7 @@ public class SpaPOSController extends GridPane{
 
     private void lockerStatusButtonAction (int page, int index){
         lockerPopUpStage.show();
-        lockerPopUp.titleProperty().set(mainModel.getLocker(100*page + index).getLockerNumberString());
+        lockerPopUp.setLocker(mainModel.getLocker(100*page + index));
         initLockerStatusPopUp(100*page + index);
     }
 
@@ -261,7 +247,7 @@ public class SpaPOSController extends GridPane{
                     previewBill=new Bill();
                     previewCustomer=null;
 
-                    checkOutPane.setPreviewBillPane(previewBill);
+                    checkOutPane.getPreviewBillPane().setBill(previewBill);
                     checkOutPane.getPreviewBillPane().setLabel("Preview Bill");
                 }
                 checkOutPane.showDep(index);
@@ -278,7 +264,7 @@ public class SpaPOSController extends GridPane{
         button.setOnAction(e->{
             checkOutPane.showDep(index);
             if (currentCustomer!=null){
-                receptionPane.addInUse(currentLocker.getLockerNumber()-1);
+                receptionPane.addInUse(currentCustomer.getLockerNumber()-1);
             }
             //set only the first cat of items visible;
         });
@@ -357,14 +343,7 @@ public class SpaPOSController extends GridPane{
         previewBill.addItem(mainModel.getDepartmentItem(dIndex,cIndex,iIndex));
     }
 
-//    private void leavePage(){
-//        currentCustomer=null;
-//        Bill b=null;
-//        checkOutPane.setCurrentBillPane(b);
-//        clearPreview();
-//        checkOutPane.getPreviewBillPane().setLabel("Preview Bill ");
-//        checkOutPane.getCurrentBillPane().setLabel("Enter a Locker to add/edit sales");
-//    }
+
 
     public Spa getMainModel(){
         return mainModel;
@@ -382,7 +361,6 @@ public class SpaPOSController extends GridPane{
         checkOutPane.getCurrentBillPane().clear("Current Bill");
         checkOutPane.getPreviewBillPane().clear("Preview Bill");
         receptionPane.clearTables();
-        currentLocker=null;
         currentCustomer=null;
 
         previewCustomer=null;
@@ -390,19 +368,12 @@ public class SpaPOSController extends GridPane{
         checkOutPane.getPreviewBillPane().setBill(previewBill);
     }
 
-//    private void clearPreview(){
-//        previewBill.removeAll();
-//        if (previewCustomer!=null) previewBill=new Bill();
-//        previewCustomer=null;
-//    }
-
-    public void setPreviewCustomer(Locker l){
-        if ( l!=null){
-            previewCustomer=l.getCustomer();
-            previewBill=l.getCustomer().getBill();
+    public void setPreviewBill(Customer c){
+        previewCustomer=c;
+        if ( c!=null){
+            previewBill=c.getBill();
         }
         else {
-            previewCustomer=null;
             previewBill=new Bill();
         }
     }

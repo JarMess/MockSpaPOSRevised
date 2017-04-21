@@ -8,10 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import mockSpaPOS.model.Bill;
-import mockSpaPOS.model.BillItem;
-import mockSpaPOS.model.Locker;
-import mockSpaPOS.model.Spa;
+import mockSpaPOS.model.*;
 import mockSpaPOS.view.ReceptionPane;
 
 public class CheckOutBillPopUp extends GridPane{
@@ -52,14 +49,14 @@ public class CheckOutBillPopUp extends GridPane{
                 "-----------------------------------------------\n";
     }
 
-    private void setBillNLockers(ObservableList<Locker> checkingOut){
+    private void setBillNLockers(ObservableList<Customer> checkingOut){
         bill= new Bill();
         int totalGuests=0;
         StringBuffer sb= new StringBuffer("Lockers: ");
-        for (Locker l : checkingOut) {
-            sb.append(l.getLockerNumber());
+        for (Customer c : checkingOut) {
+            sb.append(c.getLockerNumber());
             sb.append("  ");
-            bill.addBill(l.getCustomer().getBill());
+            bill.addBill(c.getBill());
             totalGuests++;
         }
 
